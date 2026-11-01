@@ -10,47 +10,49 @@ public class ZhanRewards extends JavaPlugin {
 
     private Economy economy;
     private PlayerPoints playerPoints;
-    calendar = new RewardsCalendar(this);
+    private RewardsCalendar calendar;
 
     @Override
     public void onEnable() {
 
         saveDefaultConfig();
-       
+
         calendar = new RewardsCalendar(this);
 
         if (!setupEconomy()) {
-            getLogger().severe("Vault или Economy не найден!");
+            getLogger().severe("Vault Economy не найден!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        playerPoints = getServer().getPluginManager()
-                .getPlugin("PlayerPoints") instanceof PlayerPoints pp ? pp : null;
-
-        if (playerPoints == null) {
+        if (!(getServer().getPluginManager()
+                .getPlugin("PlayerPoints") instanceof PlayerPoints pp)) {
             getLogger().severe("PlayerPoints не найден!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
+        playerPoints = pp;
+
         getCommand("rewards").setExecutor(new RewardsCommand(this));
         getCommand("zhanrewards").setExecutor(new AdminCommand(this));
 
         getServer().getPluginManager().registerEvents(
-                new RewardsListener(this, economy, playerPoints), this
+                new RewardsListener(this), this
         );
 
         getLogger().info("ZhanRewards успешно запущен!");
     }
 
     private boolean setupEconomy() {
+
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
 
         RegisteredServiceProvider<Economy> provider =
-                getServer().getServicesManager().getRegistration(Economy.class);
+                getServer().getServicesManager()
+                        .getRegistration(Economy.class);
 
         if (provider == null) return false;
 
@@ -66,11 +68,12 @@ public class ZhanRewards extends JavaPlugin {
         return playerPoints;
     }
 
+    public RewardsCalendar getCalendar() {
+        return calendar;
+    }
+
     @Override
     public void onDisable() {
         getLogger().info("ZhanRewards выключен!");
     }
-}
-public RewardsCalendar getCalendar() {
-    return calendar;
 }
