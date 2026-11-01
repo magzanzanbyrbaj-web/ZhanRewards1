@@ -1,16 +1,243 @@
-name: ZhanRewards
-version: 1.0.0
-main: ru.zhanbyrbay.zhanrewards.ZhanRewards
-api-version: '1.21'
-author: Zhanbyrbay
 
-commands:
-  rewards:
-    description: Открыть календарь наград
-    aliases: [daily]
-  zhanrewards:
-    description: Управление наградами
+settings:
+  title: "§8Награды • DoomLand"
+  days: 28
+  reward-once: true
 
-permissions:
-  zhanrewards.admin:
-    default: op
+rewards:
+
+  1:
+    name: "§aСтартовый бонус"
+    commands:
+      - "eco give %player% 5000"
+      - "points give %player% 1"
+
+  2:
+    name: "§eЗолотой запас"
+    commands:
+      - "eco give %player% 10000"
+    items:
+      GOLD_INGOT: 300
+      GOLDEN_APPLE: 16
+
+  3:
+    name: "§bАлмазный бонус"
+    commands:
+      - "eco give %player% 15000"
+      - "points give %player% 2"
+    items:
+      DIAMOND: 16
+      GOLDEN_APPLE: 8
+
+  4:
+    name: "§aИзумрудный запас"
+    commands:
+      - "eco give %player% 20000"
+    items:
+      EMERALD: 64
+      GOLDEN_APPLE: 16
+
+  5:
+    name: "§6Богатство"
+    commands:
+      - "eco give %player% 25000"
+      - "points give %player% 3"
+    items:
+      DIAMOND: 24
+      GOLD_INGOT: 128
+
+  6:
+    name: "§dОпытный игрок"
+    commands:
+      - "eco give %player% 30000"
+    items:
+      EXPERIENCE_BOTTLE: 64
+      GOLDEN_APPLE: 24
+
+  7:
+    name: "§6Недельный подарок"
+    commands:
+      - "eco give %player% 40000"
+      - "points give %player% 5"
+    items:
+      DIAMOND_BLOCK: 8
+      GOLDEN_APPLE: 32
+
+  8:
+    name: "§bАлмазная коллекция"
+    commands:
+      - "eco give %player% 45000"
+    items:
+      DIAMOND: 48
+      EMERALD_BLOCK: 8
+
+  9:
+    name: "§5Эндерский подарок"
+    commands:
+      - "eco give %player% 50000"
+      - "points give %player% 5"
+    items:
+      ENDER_PEARL: 32
+      GOLDEN_APPLE: 32
+
+  10:
+    name: "§6Большой бонус"
+    commands:
+      - "eco give %player% 60000"
+    items:
+      DIAMOND_BLOCK: 12
+      GOLDEN_APPLE: 48
+
+  11:
+    name: "§cТотемный запас"
+    commands:
+      - "eco give %player% 70000"
+    items:
+      TOTEM_OF_UNDYING: 1
+      DIAMOND: 32
+
+  12:
+    name: "§dАметистовый подарок"
+    commands:
+      - "eco give %player% 75000"
+      - "points give %player% 10"
+    items:
+      ENCHANTED_GOLDEN_APPLE: 1
+
+  13:
+    name: "§bАлмазный резерв"
+    commands:
+      - "eco give %player% 85000"
+    items:
+      DIAMOND_BLOCK: 16
+      TOTEM_OF_UNDYING: 1
+
+  14:
+    name: "§6Две недели"
+    commands:
+      - "eco give %player% 100000"
+      - "points give %player% 10"
+    items:
+      GOLDEN_APPLE: 64
+      ENDER_PEARL: 64
+
+  15:
+    name: "§5Мистический бонус"
+    commands:
+      - "eco give %player% 125000"
+    items:
+      TOTEM_OF_UNDYING: 2
+      DIAMOND_BLOCK: 16
+
+  16:
+    name: "§8Незеритовый запас"
+    commands:
+      - "eco give %player% 140000"
+      - "points give %player% 15"
+    items:
+      NETHERITE_SCRAP: 16
+      GOLDEN_APPLE: 64
+
+  17:
+    name: "§6Золотая коллекция"
+    commands:
+      - "eco give %player% 150000"
+    items:
+      GOLD_BLOCK: 32
+      ENCHANTED_GOLDEN_APPLE: 1
+
+  18:
+    name: "§bАлмазное богатство"
+    commands:
+      - "eco give %player% 175000"
+      - "points give %player% 15"
+    items:
+      DIAMOND_BLOCK: 24
+      TOTEM_OF_UNDYING: 2
+
+  19:
+    name: "§5Повелитель"
+    commands:
+      - "eco give %player% 200000"
+    items:
+      NETHERITE_INGOT: 2
+      ENCHANTED_GOLDEN_APPLE: 2
+
+  20:
+    name: "§cКоролевский подарок"
+    commands:
+      - "eco give %player% 225000"
+      - "points give %player% 20"
+    items:
+      TOTEM_OF_UNDYING: 3
+      DIAMOND_BLOCK: 32
+
+  21:
+    name: "§6Богатство короля"
+    commands:
+      - "eco give %player% 250000"
+    items:
+      NETHERITE_INGOT: 3
+      ENCHANTED_GOLDEN_APPLE: 3
+
+  22:
+    name: "§dАметистовый сундук"
+    commands:
+      - "eco give %player% 275000"
+      - "points give %player% 25"
+    items:
+      TOTEM_OF_UNDYING: 4
+      DIAMOND_BLOCK: 32
+
+  23:
+    name: "§8Незеритовая коллекция"
+    commands:
+      - "eco give %player% 300000"
+    items:
+      NETHERITE_INGOT: 4
+      ENCHANTED_GOLDEN_APPLE: 3
+
+  24:
+    name: "§cЛегендарный бонус"
+    commands:
+      - "eco give %player% 350000"
+      - "points give %player% 30"
+    items:
+      NETHERITE_BLOCK: 1
+      TOTEM_OF_UNDYING: 4
+
+  25:
+    name: "§6Сокровища"
+    commands:
+      - "eco give %player% 400000"
+    items:
+      NETHERITE_INGOT: 8
+      ENCHANTED_GOLDEN_APPLE: 4
+
+  26:
+    name: "§5Мастер богатства"
+    commands:
+      - "eco give %player% 450000"
+      - "points give %player% 40"
+    items:
+      NETHERITE_BLOCK: 2
+      TOTEM_OF_UNDYING: 5
+
+  27:
+    name: "§cПредфинальный подарок"
+    commands:
+      - "eco give %player% 500000"
+      - "points give %player% 50"
+    items:
+      NETHERITE_INGOT: 12
+      ENCHANTED_GOLDEN_APPLE: 5
+
+  28:
+    name: "§6§lLEGENDARY REWARD"
+    commands:
+      - "eco give %player% 1000000"
+      - "points give %player% 100"
+    items:
+      NETHERITE_BLOCK: 4
+      TOTEM_OF_UNDYING: 10
+      ENCHANTED_GOLDEN_APPLE: 8
