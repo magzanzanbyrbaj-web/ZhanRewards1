@@ -1,0 +1,16 @@
+name: ZhanRewards
+version: 1.0.0
+main: ru.zhanbyrbay.zhanrewards.ZhanRewards
+api-version: '1.21'
+author: Zhanbyrbay
+
+commands:
+  rewards:
+    description: Открыть календарь наград
+    aliases: [daily]
+  zhanrewards:
+    description: Управление наградами
+
+permissions:
+  zhanrewards.admin:
+    default: op
