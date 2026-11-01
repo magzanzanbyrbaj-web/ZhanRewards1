@@ -10,11 +10,14 @@ public class ZhanRewards extends JavaPlugin {
 
     private Economy economy;
     private PlayerPoints playerPoints;
+    calendar = new RewardsCalendar(this);
 
     @Override
     public void onEnable() {
 
         saveDefaultConfig();
+       
+        calendar = new RewardsCalendar(this);
 
         if (!setupEconomy()) {
             getLogger().severe("Vault или Economy не найден!");
@@ -67,4 +70,7 @@ public class ZhanRewards extends JavaPlugin {
     public void onDisable() {
         getLogger().info("ZhanRewards выключен!");
     }
+}
+public RewardsCalendar getCalendar() {
+    return calendar;
 }
