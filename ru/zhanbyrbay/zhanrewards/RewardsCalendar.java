@@ -17,75 +17,72 @@ public class RewardsCalendar {
         this.plugin = plugin;
     }
 
-    private NamespacedKey getStartDateKey() {
+    private NamespacedKey startKey() {
         return new NamespacedKey(plugin, "calendar_start");
     }
 
-    private NamespacedKey getClaimedDayKey() {
-        return new NamespacedKey(plugin, "calendar_claimed");
+    private NamespacedKey lastClaimKey() {
+        return new NamespacedKey(plugin, "last_claim_date");
+    }
+
+    private NamespacedKey dayKey(int day) {
+        return new NamespacedKey(plugin, "day_" + day);
     }
 
     public int getCurrentDay(Player player) {
-
         PersistentDataContainer data =
                 player.getPersistentDataContainer();
 
-        LocalDate today = LocalDate.now();
+        String start = data.get(startKey(), PersistentDataType.STRING);
 
-        if (!data.has(getStartDateKey(), PersistentDataType.STRING)) {
-            data.set(
-                    getStartDateKey(),
-                    PersistentDataType.STRING,
-                    today.toString()
-            );
-
-            return 1;
+        if (start == null) {
+            start = LocalDate.now().toString();
+            data.set(startKey(), PersistentDataType.STRING, start);
         }
 
-        LocalDate start = LocalDate.parse(
-                data.get(getStartDateKey(), PersistentDataType.STRING)
+        LocalDate startDate = LocalDate.parse(start);
+        long passed = ChronoUnit.DAYS.between(
+                startDate, LocalDate.now()
         );
 
-        long days = ChronoUnit.DAYS.between(start, today);
-
-        return (int) Math.min(28, days + 1);
-    }
-
-    public boolean canClaim(Player player, int day) {
-
-        int currentDay = getCurrentDay(player);
-
-        if (day != currentDay) {
-            return false;
-        }
-
-        PersistentDataContainer data =
-                player.getPersistentDataContainer();
-
-        Integer claimed = data.get(
-                getClaimedDayKey(),
-                PersistentDataType.INTEGER
-        );
-
-        return claimed == null || claimed < day;
-    }
-
-    public void markClaimed(Player player, int day) {
-
-        player.getPersistentDataContainer().set(
-                getClaimedDayKey(),
-                PersistentDataType.INTEGER,
-                day
-        );
+        return (int) Math.min(28, Math.max(1, passed + 1));
     }
 
     public boolean isClaimed(Player player, int day) {
+        return player.getPersistentDataContainer().has(
+                dayKey(day), PersistentDataType.BYTE
+        );
+    }
 
-        Integer claimed = player.getPersistentDataContainer().get(
-                getClaimedDayKey(),
-                PersistentDataType.INTEGER
+    public boolean canClaim(Player player, int day) {
+        if (day < 1 || day > 28) return false;
+        if (day > getCurrentDay(player)) return false;
+        if (isClaimed(player, day)) return false;
+
+        String lastClaim = player.getPersistentDataContainer().get(
+                lastClaimKey(), PersistentDataType.STRING
         );
 
-        return claimed != null && claimed >= day;
+        return !LocalDate.now().toString().equals(lastClaim);
+    }
+
+    public boolean hasClaimedToday(Player player) {
+        String lastClaim = player.getPersistentDataContainer().get(
+                lastClaimKey(), PersistentDataType.STRING
+        );
+
+        return LocalDate.now().toString().equals(lastClaim);
+    }
+
+    public void markClaimed(Player player, int day) {
+        PersistentDataContainer data =
+                player.getPersistentDataContainer();
+
+        data.set(dayKey(day), PersistentDataType.BYTE, (byte) 1);
+        data.set(
+                lastClaimKey(),
+                PersistentDataType.STRING,
+                LocalDate.now().toString()
+        );
     }
 }
