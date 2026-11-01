@@ -13,106 +13,99 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import net.milkbowl.vault.economy.Economy;
-import org.black_ixx.playerpoints.PlayerPoints;
-
 public class RewardsListener implements Listener {
 
     private final ZhanRewards plugin;
-    private final Economy economy;
-    private final PlayerPoints playerPoints;
 
-    public RewardsListener(ZhanRewards plugin, Economy economy, PlayerPoints playerPoints) {
+    public RewardsListener(ZhanRewards plugin) {
         this.plugin = plugin;
-        this.economy = economy;
-        this.playerPoints = playerPoints;
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
 
-        String title = plugin.getConfig().getString("settings.title", "§8Награды • DoomLand");
+        String title = plugin.getConfig().getString(
+                "settings.title", "§8Награды • DoomLand"
+        );
 
         if (!event.getView().getTitle().equals(title)) return;
 
         event.setCancelled(true);
 
         if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (event.getClickedInventory() == null) return;
+        if (event.getClickedInventory() != event.getView().getTopInventory()) return;
 
         ItemStack item = event.getCurrentItem();
 
-        if (item == null || item.getType() != Material.CHEST) return;
-        if (!item.hasItemMeta()) return;
+        if (item == null || !item.hasItemMeta()) return;
 
         String name = item.getItemMeta().getDisplayName();
 
-        if (!name.startsWith("§6✦ §fДень §e")) return;
+        for (int day = 1; day <= 28; day++) {
 
-        int day;
+            ConfigurationSection reward =
+                    plugin.getConfig().getConfigurationSection("rewards." + day);
 
-        try {
-            day = Integer.parseInt(name.replace("§6✦ §fДень §e", ""));
-        } catch (NumberFormatException exception) {
-            return;
-        }
+            if (reward == null) continue;
+            if (!name.equals(reward.getString("name"))) continue;
 
-        ConfigurationSection reward = plugin.getConfig().getConfigurationSection("rewards." + day);
+            NamespacedKey key = new NamespacedKey(plugin, "day_" + day);
 
-        if (reward == null) {
-            player.sendMessage("§cНаграда не настроена!");
-            return;
-        }
-
-        NamespacedKey key = new NamespacedKey(plugin, "day_" + day);
-
-        if (player.getPersistentDataContainer().has(key, PersistentDataType.BYTE)) {
-            player.sendMessage("§cЭта награда уже получена!");
-            return;
-        }
-
-        // Монеты и аметисты
-        for (String command : reward.getStringList("commands")) {
-            String finalCommand = command.replace("%player%", player.getName());
-
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
-        }
-
-        // Предметы
-        ConfigurationSection items = reward.getConfigurationSection("items");
-
-        if (items != null) {
-            for (String materialName : items.getKeys(false)) {
-
-                Material material = Material.matchMaterial(materialName);
-
-                if (material == null) continue;
-
-                int amount = items.getInt(materialName);
-
-                if (amount <= 0) continue;
-
-                ItemStack rewardItem = new ItemStack(material, amount);
-
-                player.getInventory().addItem(rewardItem).values()
-                        .forEach(leftover -> player.getWorld().dropItemNaturally(
-                                player.getLocation(), leftover
-                        ));
+            if (player.getPersistentDataContainer().has(key, PersistentDataType.BYTE)) {
+                player.sendMessage("§cЭта награда уже получена!");
+                return;
             }
+
+            // Выполнение денежных команд
+            for (String command : reward.getStringList("commands")) {
+                Bukkit.dispatchCommand(
+                        Bukkit.getConsoleSender(),
+                        command.replace("%player%", player.getName())
+                );
+            }
+
+            // Выдача предметов
+            ConfigurationSection items =
+                    reward.getConfigurationSection("items");
+
+            if (items != null) {
+                for (String materialName : items.getKeys(false)) {
+
+                    Material material = Material.matchMaterial(materialName);
+                    if (material == null) continue;
+
+                    int amount = items.getInt(materialName);
+                    if (amount <= 0) continue;
+
+                    ItemStack stack = new ItemStack(material, amount);
+
+                    player.getInventory().addItem(stack).values().forEach(leftover ->
+                            player.getWorld().dropItemNaturally(
+                                    player.getLocation(), leftover
+                            )
+                    );
+                }
+            }
+
+            player.getPersistentDataContainer().set(
+                    key,
+                    PersistentDataType.BYTE,
+                    (byte) 1
+            );
+
+            player.sendMessage("§a✔ Награда за день §e" + day + " §aполучена!");
+            player.closeInventory();
+            return;
         }
-
-        player.getPersistentDataContainer().set(
-                key,
-                PersistentDataType.BYTE,
-                (byte) 1
-        );
-
-        player.sendMessage("§a✦ §fНаграда за день §e" + day + " §fполучена!");
-        player.closeInventory();
     }
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
-        String title = plugin.getConfig().getString("settings.title", "§8Награды • DoomLand");
+
+        String title = plugin.getConfig().getString(
+                "settings.title", "§8Награды • DoomLand"
+        );
 
         if (event.getView().getTitle().equals(title)) {
             event.setCancelled(true);
